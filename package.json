@@ -1,0 +1,39 @@
+{
+	"name": "node-events-batcher",
+	"version": "0.0.0",
+	"description": "Universal events batcher for NodeJS",
+	"scripts": {
+		"lint": "pnpm lint:ec && pnpm lint:eslint",
+		"lint:ec": "ec",
+		"lint:eslint": "eslint --ext .ts,.tsx ./src/",
+		"build": "tsc --build src",
+		"test": "jest -c ./jest.config.json"
+	},
+	"keywords": [
+		"events-batcher",
+		"batcher",
+		"nodejs"
+	],
+	"author": "Egor Kushnarev",
+	"license": "MIT",
+	"packageManager": "pnpm@10.10.0",
+	"devDependencies": {
+		"@eslint/eslintrc": "^3.3.3",
+		"@eslint/js": "^9.39.2",
+		"@jest/globals": "^30.2.0",
+		"@tsconfig/node22": "^22.0.5",
+		"@types/jest": "^30.0.0",
+		"@types/node": "^25.0.9",
+		"@typescript-eslint/eslint-plugin": "^8.53.1",
+		"@typescript-eslint/parser": "^8.53.1",
+		"editorconfig-checker": "^5.1.9",
+		"eslint": "^9.39.2",
+		"eslint-config-standard": "^17.1.0",
+		"eslint-plugin-import": "^2.32.0",
+		"eslint-plugin-simple-import-sort": "^12.1.1",
+		"globals": "^17.1.0",
+		"jest": "^30.2.0",
+		"ts-jest": "^29.4.6",
+		"typescript": "^5.9.3"
+	}
+}

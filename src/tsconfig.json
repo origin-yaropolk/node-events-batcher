@@ -1,0 +1,25 @@
+{
+	"extends": [
+		"@tsconfig/node22/tsconfig.json",
+	],
+	"compilerOptions": {
+		"composite": false,
+		"noUncheckedIndexedAccess": false,
+		"noUnusedLocals": false,
+		"sourceMap": true,
+		"outDir": "../dist",
+		"isolatedModules": true,
+		"types": [
+			"node",
+		],
+	},
+
+	"include": [
+		"**/*.ts"
+, "../test/accumulator.test.ts", "../test/events-batcher.test.ts", "../test/options.test.ts"	],
+
+	"exclude": [
+		"node_modules/**",
+		"**/*.test.ts",
+	]
+}
