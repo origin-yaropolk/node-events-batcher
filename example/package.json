@@ -1,0 +1,21 @@
+{
+	"name": "node-events-batcher-example",
+	"version": "0.0.0",
+	"description": "node events batcher example with electron windows",
+	"author": "Egor Kushnarev",
+	"license": "MIT",
+	"packageManager": "pnpm@10.28.1",
+	"scripts": {
+		"start": "electron ./main.js"
+	},
+	"volta": {
+		"node": "22.22.0",
+		"pnpm": "10.28.1"
+	},
+	"devDependencies": {
+		"electron": "^40.0.0"
+	},
+	"dependencies": {
+		"node-events-batcher": "file:D:/dev/node-events-batcher/node-events-batcher-0.0.0.tgz"
+	}
+}
