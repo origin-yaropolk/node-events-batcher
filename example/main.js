@@ -1,8 +1,18 @@
 const { app, BrowserWindow, ipcMain } = require('electron/main')
 const { EventsBatcher } = require('node-events-batcher')
 const path = require('node:path')
+const fs = require('node:fs')
 
 var windows = [];
+
+const defaultState = {
+	x: 250,
+	y: 250,
+	width: 800,
+	height: 600,
+}
+
+const persistedWindowsPath = path.join(app.getPath('temp'), 'node-events-batcher-example', 'windows.json')
 
 function closeHandler(ev) {
 	ev.preventDefault()
@@ -14,9 +24,48 @@ function forceClose(win) {
 	win.close()
 }
 
+function storeState() {
+	const state = []
+
+	for (const window of windows) {
+		const bounds = window.getBounds()
+
+		state.push({
+			x: bounds.x,
+			y: bounds.y,
+			width: bounds.width,
+			height: bounds.height,
+		})
+	}
+
+	const dir = path.dirname(persistedWindowsPath)
+
+	if (!fs.existsSync(dir)) {
+		fs.mkdirSync(dir, {recursive: true})
+	}
+
+	fs.writeFileSync(persistedWindowsPath, JSON.stringify(state))
+}
+
+function restoreState() {
+	if (!fs.existsSync(persistedWindowsPath)) {
+		return false
+	}
+
+	persistedWindwosState = JSON.parse(fs.readFileSync(persistedWindowsPath, {encoding:'utf-8'}))
+
+	for (windowState of persistedWindwosState) {
+		createWindow(windowState)
+	}
+
+	return true
+}
+
 function cb(acc) {
 	if (acc.length === windows.length) {
 		console.log('All windows closed')
+
+		storeState()
 
 		windows.forEach(w => {
 			// save before closing
@@ -56,12 +105,14 @@ function closeAllWindows() {
 	});
 }
 
-function createWindow() {
+function createWindow(state = defaultState) {
 	console.log('Create window')
 
 	winRef = new BrowserWindow({
-		width: 800,
-		height: 600,
+		x: state.x,
+		y: state.y,
+		width: state.width,
+		height: state.height,
 		webPreferences:{
 			preload: path.join(__dirname, './preload.js')
 		}
@@ -78,5 +129,7 @@ app.whenReady().then(() => {
 	ipcMain.addListener('create-window', _ => createWindow())
 	ipcMain.addListener('close-all-windows', _ => closeAllWindows())
 
-	createWindow()
+	if (!restoreState()) {
+		createWindow(defaultState)
+	}
 })
