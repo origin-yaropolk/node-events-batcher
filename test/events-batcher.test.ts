@@ -13,15 +13,15 @@ describe("EventsBatcher tests", () => {
 	test("Batch size based strategy with array test", async() => {
 		const [batchSizeResultResolver, batchSizeResultAwaiter] = makeAwaiter<ReadonlyArray<number>>();
 		const [timeoutResultResolver, timeoutResultAwaiter] = makeAwaiter<ReadonlyArray<number>>();
-		var timeoutedStart: Date = new Date();
-		var timeoutedEnd: Date = new Date();
+		var timedOutStart: Date = new Date();
+		var timedOutEnd: Date = new Date();
 
 		const cb = (acc: ReadonlyArray<number>): void => {
 			if (acc.length === 6) {
 				return batchSizeResultResolver(acc);
 			}
 
-			timeoutedEnd = new Date();
+			timedOutEnd = new Date();
 			timeoutResultResolver(acc);
 		};
 
@@ -39,7 +39,7 @@ describe("EventsBatcher tests", () => {
 			batcher.add(4);
 			batcher.add(3);
 
-			timeoutedStart = new Date();
+			timedOutStart = new Date();
 			batcher.add(1);
 			batcher.add(2);
 		});
@@ -49,12 +49,12 @@ describe("EventsBatcher tests", () => {
 		expect(got.length).toEqual(6);
 		expect(got).toEqual([3, 1, 5, 2, 4, 3]);
 
-		const timeoutedResult = await timeoutResultAwaiter;
+		const timedOutResult = await timeoutResultAwaiter;
 
-		expect(timeoutedResult.length).toEqual(2);
-		expect(timeoutedResult).toEqual([1, 2]);
+		expect(timedOutResult.length).toEqual(2);
+		expect(timedOutResult).toEqual([1, 2]);
 
-		const duration = timeoutedEnd.getTime() - timeoutedStart.getTime();
+		const duration = timedOutEnd.getTime() - timedOutStart.getTime();
 
 		const isDurationAcceptable = equalWithError(duration, 2000, 1);
 
@@ -205,7 +205,8 @@ describe("EventsBatcher tests", () => {
 
 		const result = await resultAwaiter;
 
-		expect(result).toEqual(Error("Error in callback"));
+		expect(result).toBeInstanceOf(Error)
+		expect((result as Error).message).toEqual("Error in callback");
 	});
 
 	test("Async error handling test", async() => {
@@ -226,7 +227,8 @@ describe("EventsBatcher tests", () => {
 
 		const result = await resultAwaiter;
 
-		expect(result).toEqual(Error("Error in callback"));
+		expect(result).toBeInstanceOf(Error)
+		expect((result as Error).message).toEqual("Error in callback");
 	});
 
 	test("Flush test", async() => {

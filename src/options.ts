@@ -17,9 +17,9 @@ export type DebounceOptions = BaseOptions & {
 export function isSizeOptions(options: unknown): options is SizeOptions {
 	return options !== null &&
 		typeof options === 'object' &&
-		'count' in options &&
-		options.count !== null &&
-		typeof options.count === 'number';
+		'size' in options &&
+		options.size !== null &&
+		typeof options.size === 'number';
 }
 
 export function isDebounceOptions(options: unknown): options is DebounceOptions {
