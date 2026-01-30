@@ -1,6 +1,7 @@
 import { Accumulator } from './accumulator';
 import { DebounceOptions, defaultOptions, SizeOptions, validateOptions } from './options';
-import { NewStrategy, Strategy } from './strategy';
+import { createStrategy, Strategy } from './strategy';
+import * as Errors from './errors';
 
 export type CallbackType<T> = (accumulator: ReadonlyArray<T>) => void | PromiseLike<void>;
 export type ErrorHandler = (error: unknown) => void;
@@ -8,6 +9,7 @@ export type ErrorHandler = (error: unknown) => void;
 export class EventsBatcher<EventType> {
 	private accumulator: Accumulator<EventType>;
 	private strategy: Strategy<EventType>;
+	private flushing: boolean = false;
 
 	constructor(
 		private readonly cb: CallbackType<EventType>,
@@ -20,10 +22,14 @@ export class EventsBatcher<EventType> {
 		}
 
 		this.accumulator = new Accumulator<EventType>(this.options.accumulatorType);
-		this.strategy = NewStrategy<EventType>(options, this.accumulator, this.fire.bind(this));
+		this.strategy = createStrategy<EventType>(options, this.accumulator, this.fire.bind(this));
 	}
 
 	public add(object: EventType): void {
+		if (this.flushing) {
+			throw Errors.addInCallback()
+		}
+
 		this.strategy.add(object);
 	}
 
@@ -32,6 +38,7 @@ export class EventsBatcher<EventType> {
 	}
 
 	private fire(): void {
+		this.flushing = true;
 		const events = this.accumulator.get();
 
 		if (events.length === 0) {
@@ -53,6 +60,7 @@ export class EventsBatcher<EventType> {
 		}
 		finally {
 			this.strategy.reset();
+			this.flushing = false;
 		}
 	}
 

@@ -7,13 +7,13 @@ export interface Strategy<EventType> {
 	add(event: EventType): void;
 }
 
-export function NewStrategy<EventType>(options: BaseOptions, accumulator: Accumulator<EventType>, fire: ()=> void): Strategy<EventType> {
-	if (isDebounceOptions(options)) {
-		return new DebounceStrategy(options, accumulator, fire);
-	}
-
+export function createStrategy<EventType>(options: BaseOptions, accumulator: Accumulator<EventType>, fire: ()=> void): Strategy<EventType> {
 	if (isSizeOptions(options)) {
 		return new SizeStrategy(options, accumulator, fire);
+	}
+	
+	if (isDebounceOptions(options)) {
+		return new DebounceStrategy(options, accumulator, fire);
 	}
 
 	throw Errors.shouldNotBeExecuted();

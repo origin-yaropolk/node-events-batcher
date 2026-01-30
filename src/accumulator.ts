@@ -4,7 +4,7 @@ export type AccumulatorType = 'array' | 'set';
 
 export class Accumulator<T> {
 	private addWrapper: (value: T) => void;
-	private cleatWrapper: () => void;
+	private clearWrapper: () => void;
 	private lengthWrapper: () => number;
 	private getWrapper: () => ReadonlyArray<T>;
 
@@ -16,7 +16,7 @@ export class Accumulator<T> {
 				accumulator.push(value);
 			};
 
-			this.cleatWrapper = function(): void {
+			this.clearWrapper = function(): void {
 				accumulator.splice(0, accumulator.length);
 			};
 
@@ -38,7 +38,7 @@ export class Accumulator<T> {
 				accumulator.add(value);
 			};
 
-			this.cleatWrapper = function(): void {
+			this.clearWrapper = function(): void {
 				accumulator.clear();
 			};
 
@@ -61,7 +61,7 @@ export class Accumulator<T> {
 	}
 
 	clear(): void {
-		this.cleatWrapper();
+		this.clearWrapper();
 	}
 
 	length(): number {
