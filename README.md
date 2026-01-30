@@ -17,11 +17,11 @@ npm install node-events-batcher
 import { EventsBatcher } from 'node-events-batcher';
 
 const batcher = new EventsBatcher<string>(
-  (events) => {
-    console.log('Flushed:', events);
-  },
-  (err) => console.error(err),
-  { size: 5, accumulatorType: 'array', timeoutMs: 5000 }
+	(events) => {
+		console.log('Flushed:', events);
+	},
+	(err) => console.error(err),
+	{ size: 5, accumulatorType: 'array', timeoutMs: 5000 }
 );
 
 batcher.add('a');
@@ -41,9 +41,9 @@ batcher.flush(); // flush any remaining events manually
 
 ```ts
 new EventsBatcher<EventType>(
-  callback: (events: ReadonlyArray<EventType>) => void | Promise<void>,
-  errorHandler?: ((error: unknown) => void) | null,
-  options?: SizeOptions | DebounceOptions
+	callback: (events: ReadonlyArray<EventType>) => void | Promise<void>,
+	errorHandler?: ((error: unknown) => void) | null,
+	options?: SizeOptions | DebounceOptions
 )
 ```
 
@@ -90,13 +90,13 @@ Two strategy types:
 
 ```ts
 const batcher = new EventsBatcher<Payload>(
-  sendToServer,
-  null,
-  {
-    size: 10,
-    accumulatorType: 'array',
-    timeoutMs: 3000,
-  }
+	sendToServer,
+	null,
+	{
+		size: 10,
+		accumulatorType: 'array',
+		timeoutMs: 3000,
+	}
 );
 ```
 
@@ -104,13 +104,13 @@ const batcher = new EventsBatcher<Payload>(
 
 ```ts
 const batcher = new EventsBatcher<WindowId>(
-  persistWindowState,
-  console.error,
-  {
-    debounceMs: 100,
-    timeoutMs: 2000,
-    accumulatorType: 'set',
-  }
+	persistWindowState,
+	console.error,
+	{
+		debounceMs: 100,
+		timeoutMs: 2000,
+		accumulatorType: 'set',
+	}
 );
 ```
 

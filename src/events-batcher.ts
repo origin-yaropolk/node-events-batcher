@@ -1,5 +1,5 @@
 import { Accumulator } from './accumulator';
-import { SizeOptions, defaultOptions, DebounceOptions, validateOptions } from './options';
+import { DebounceOptions, defaultOptions, SizeOptions, validateOptions } from './options';
 import { NewStrategy, Strategy } from './strategy';
 
 export type CallbackType<T> = (accumulator: ReadonlyArray<T>) => void | PromiseLike<void>;

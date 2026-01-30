@@ -1,6 +1,6 @@
 import { Accumulator } from './accumulator';
 import * as Errors from './errors';
-import { BaseOptions, SizeOptions, isSizeOptions, isDebounceOptions, DebounceOptions } from './options';
+import { BaseOptions, DebounceOptions, isDebounceOptions, isSizeOptions, SizeOptions } from './options';
 
 export interface Strategy<EventType> {
 	reset(): void;
