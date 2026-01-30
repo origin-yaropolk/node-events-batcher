@@ -11,7 +11,7 @@ export function createStrategy<EventType>(options: BaseOptions, accumulator: Acc
 	if (isSizeOptions(options)) {
 		return new SizeStrategy(options, accumulator, fire);
 	}
-	
+
 	if (isDebounceOptions(options)) {
 		return new DebounceStrategy(options, accumulator, fire);
 	}

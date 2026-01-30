@@ -46,7 +46,8 @@ export class EventsBatcher<EventType> {
 				mayBePromise.catch(error => {
 					try {
 						this.handleError(error);
-					} catch (e) {
+					}
+					catch (e) {
 						// Rethrow in next tick so it surfaces; throwing here would only
 						// reject the .catch() promise and become an unhandled rejection.
 						queueMicrotask(() => {
