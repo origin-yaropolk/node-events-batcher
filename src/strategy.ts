@@ -1,37 +1,37 @@
 import { Accumulator } from './accumulator';
 import * as Errors from './errors';
-import { CommonOptions, CountOptions, isCountOptions, isShiftOptions, ShiftOptions } from './options';
+import { BaseOptions, SizeOptions, isSizeOptions, isDebounceOptions, DebounceOptions } from './options';
 
 export interface Strategy<EventType> {
 	reset(): void;
 	add(event: EventType): void;
 }
 
-export function NewStrategy<EventType>(options: CommonOptions, accumulator: Accumulator<EventType>, fire: ()=> void): Strategy<EventType> {
-	if (isShiftOptions(options)) {
-		return new ShiftStrategy(options, accumulator, fire);
+export function NewStrategy<EventType>(options: BaseOptions, accumulator: Accumulator<EventType>, fire: ()=> void): Strategy<EventType> {
+	if (isDebounceOptions(options)) {
+		return new DebounceStrategy(options, accumulator, fire);
 	}
 
-	if (isCountOptions(options)) {
-		return new CountStrategy(options, accumulator, fire);
+	if (isSizeOptions(options)) {
+		return new SizeStrategy(options, accumulator, fire);
 	}
 
 	throw Errors.shouldNotBeExecuted();
 }
 
-export class ShiftStrategy<EventType> implements Strategy<EventType> {
-	private shiftTimeout: NodeJS.Timeout | null = null;
+export class DebounceStrategy<EventType> implements Strategy<EventType> {
+	private debounceTimeout: NodeJS.Timeout | null = null;
 	private timeout: NodeJS.Timeout | null = null;
 
 	constructor(
-		private readonly options: ShiftOptions,
+		private readonly options: DebounceOptions,
 		private readonly accumulator: Accumulator<EventType>,
-		private readonly fire: ()=> void) {}
+		private readonly fire: () => void) {}
 
 	reset(): void {
-		if (this.shiftTimeout) {
-			clearTimeout(this.shiftTimeout);
-			this.shiftTimeout = null;
+		if (this.debounceTimeout) {
+			clearTimeout(this.debounceTimeout);
+			this.debounceTimeout = null;
 		}
 
 		if (this.timeout) {
@@ -45,8 +45,8 @@ export class ShiftStrategy<EventType> implements Strategy<EventType> {
 	add(event: EventType): void {
 		this.accumulator.add(event);
 
-		if (this.shiftTimeout !== null) {
-			this.shiftTimeout.refresh();
+		if (this.debounceTimeout !== null) {
+			this.debounceTimeout.refresh();
 			return;
 		}
 
@@ -54,15 +54,15 @@ export class ShiftStrategy<EventType> implements Strategy<EventType> {
 			this.timeout = setTimeout(this.fire, this.options.timeoutMs);
 		}
 
-		this.shiftTimeout = setTimeout(this.fire, this.options.shiftMs);
+		this.debounceTimeout = setTimeout(this.fire, this.options.debounceMs);
 	}
 }
 
-export class CountStrategy<EventType> implements Strategy<EventType> {
+export class SizeStrategy<EventType> implements Strategy<EventType> {
 	private timeout: NodeJS.Timeout | null = null;
 
 	constructor(
-		private readonly options: CountOptions,
+		private readonly options: SizeOptions,
 		private readonly accumulator: Accumulator<EventType>,
 		private readonly fire: () => void) {}
 
@@ -78,7 +78,7 @@ export class CountStrategy<EventType> implements Strategy<EventType> {
 	add(event: EventType): void {
 		this.accumulator.add(event);
 
-		if (this.accumulator.length() >= this.options.count) {
+		if (this.accumulator.length() >= this.options.size) {
 			this.fire();
 			return;
 		}

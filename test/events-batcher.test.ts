@@ -28,7 +28,7 @@ describe("EventsBatcher tests", () => {
 		const batcher = new EventsBatcher(cb, null, {
 			accumulatorType: 'array',
 			timeoutMs: 2000,
-			count: 6,
+			size: 6,
 		});
 
 		const _ = new Promise(() => {
@@ -71,7 +71,7 @@ describe("EventsBatcher tests", () => {
 		const batcher = new EventsBatcher(cb, null, {
 			accumulatorType: 'set',
 			timeoutMs: 2000,
-			count: 6,
+			size: 6,
 		});
 
 		const _ = new Promise(() => {
@@ -94,7 +94,7 @@ describe("EventsBatcher tests", () => {
 		await sleep(3000);
 	});
 
-	test("Shift based strategy with array - shifting test", async() => {
+	test("Debounce based strategy with array - debouncing test", async() => {
 		const [resultResolver, resultAwaiter] = makeAwaiter<ReadonlyArray<number>>();
 		var end = new Date();
 
@@ -106,7 +106,7 @@ describe("EventsBatcher tests", () => {
 		const batcher = new EventsBatcher(cb, null, {
 			accumulatorType: 'array',
 			timeoutMs: null,
-			shiftMs: 50,
+			debounceMs: 50,
 		});
 		var added = 0;
 
@@ -132,7 +132,7 @@ describe("EventsBatcher tests", () => {
 		expect(items).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
 	});
 
-	test("Shift based strategy with array - two batches test", async() => {
+	test("Debounce based strategy with array - two batches test", async() => {
 		const result = new Array<ReadonlyArray<number>>();
 
 		const cb = async(acc: ReadonlyArray<number>): Promise<void> => {
@@ -142,7 +142,7 @@ describe("EventsBatcher tests", () => {
 		const batcher = new EventsBatcher(cb, null, {
 			accumulatorType: 'array',
 			timeoutMs: null,
-			shiftMs: 50,
+			debounceMs: 50,
 		});
 
 		{
@@ -162,7 +162,7 @@ describe("EventsBatcher tests", () => {
 		expect(result).toEqual([[1, 2, 3], [4, 5 ,6]]);
 	});
 
-	test("Shift based strategy with array - close shift and timeout test", async() => {
+	test("Debounce based strategy with array - close debounce and timeout test", async() => {
 		const [resultResolver, resultAwaiter] = makeAwaiter<ReadonlyArray<number>>();
 
 		const cb = async(acc: ReadonlyArray<number>): Promise<void> => {
@@ -173,7 +173,7 @@ describe("EventsBatcher tests", () => {
 		const batcher = new EventsBatcher(cb, null, {
 			accumulatorType: 'array',
 			timeoutMs: 500,
-			shiftMs: 499,
+			debounceMs: 499,
 		});
 
 		const _ = new Promise(() => {
@@ -251,7 +251,7 @@ describe("EventsBatcher tests", () => {
 
 		const batcher = new EventsBatcher(cb, null, {
 			accumulatorType: 'array',
-			count: 5,
+			size: 5,
 			timeoutMs: null
 		});
 

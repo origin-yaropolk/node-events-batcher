@@ -1,37 +1,37 @@
-import { CommonOptions, defaultOptions, validateCommonOptions, validateOptions } from '../src/options';
+import { BaseOptions, defaultOptions, validateBaseOptions, validateOptions } from '../src/options';
 import * as Errors from '../src/errors';
 
 describe('Options tests', () => {
-	describe('Valdation tests', () => {
+	describe('Validation tests', () => {
 		test('Validate default options', () => {
 			const got = validateOptions(defaultOptions);
 
 			expect(got).toBeNull();
 		});
 
-		test('Validate common options', () => {
-			var got = validateCommonOptions({
+		test('Validate base options', () => {
+			var got = validateBaseOptions({
 				accumulatorType: 'array',
 				timeoutMs: null
 			});
 
 			expect(got).toBeNull();
 
-			got = validateCommonOptions({
+			got = validateBaseOptions({
 				accumulatorType: 'set',
 				timeoutMs: 500
 			});
 
 			expect(got).toBeNull();
 
-			got = validateCommonOptions({
+			got = validateBaseOptions({
 				accumulatorType: 'list',
 				timeoutMs: 500
-			} as unknown as CommonOptions);
+			} as unknown as BaseOptions);
 
 			expect(got).toEqual(Errors.unsupportedAccumulatorType('list'));
 
-			got = validateCommonOptions({
+			got = validateBaseOptions({
 				accumulatorType: 'set',
 				timeoutMs: -15
 			});
@@ -39,11 +39,11 @@ describe('Options tests', () => {
 			expect(got).toEqual(Errors.nonPositiveTimeout(-15));
 		});
 
-		test('Validate count options', () => {
+		test('Validate size options', () => {
 			var got = validateOptions({
 				accumulatorType: 'set',
 				timeoutMs: null,
-				count: 10
+				size: 10
 			});
 
 			expect(got).toBeNull();
@@ -51,17 +51,17 @@ describe('Options tests', () => {
 			var got = validateOptions({
 				accumulatorType: 'set',
 				timeoutMs: null,
-				count: -10
+				size: -10
 			});
 
-			expect(got).toEqual(Errors.nonPositiveCount(-10));
+			expect(got).toEqual(Errors.nonPositiveSize(-10));
 		});
 
-		test('Validate shift options', () => {
+		test('Validate debounce options', () => {
 			var got = validateOptions({
 				accumulatorType: 'array',
 				timeoutMs: 2000,
-				shiftMs: 50
+				debounceMs: 50
 			});
 
 			expect(got).toBeNull();
@@ -69,18 +69,18 @@ describe('Options tests', () => {
 			got = validateOptions({
 				accumulatorType: 'array',
 				timeoutMs: 2000,
-				shiftMs: -50
+				debounceMs: -50
 			});
 
-			expect(got).toEqual(Errors.nonPositiveShift(-50));
+			expect(got).toEqual(Errors.nonPositiveDebounce(-50));
 
 			got = validateOptions({
 				accumulatorType: 'array',
 				timeoutMs: 100,
-				shiftMs: 500
+				debounceMs: 500
 			});
 
-			expect(got).toEqual(Errors.shiftGreaterThanTimeout(500, 100));
+			expect(got).toEqual(Errors.debounceGreaterThanTimeout(500, 100));
 		});
 	})
 });

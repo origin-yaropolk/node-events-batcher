@@ -52,9 +52,9 @@ function restoreState() {
 		return false
 	}
 
-	persistedWindwosState = JSON.parse(fs.readFileSync(persistedWindowsPath, {encoding:'utf-8'}))
+	const persistedWindowsState = JSON.parse(fs.readFileSync(persistedWindowsPath, {encoding:'utf-8'}))
 
-	for (windowState of persistedWindwosState) {
+	for (const windowState of persistedWindowsState) {
 		createWindow(windowState)
 	}
 
@@ -96,7 +96,7 @@ function cb(acc) {
 const batcher = new EventsBatcher(cb, null, {
 	accumulatorType: 'array',
 	timeoutMs: 500,
-	shiftMs: 50,
+	debounceMs: 50,
 })
 
 function closeAllWindows() {
@@ -108,7 +108,7 @@ function closeAllWindows() {
 function createWindow(state = defaultState) {
 	console.log('Create window')
 
-	winRef = new BrowserWindow({
+	const winRef = new BrowserWindow({
 		x: state.x,
 		y: state.y,
 		width: state.width,

@@ -1,20 +1,20 @@
 import { AccumulatorType } from './accumulator';
 import * as Errors from './errors';
 
-export interface CommonOptions {
+export interface BaseOptions {
 	accumulatorType: AccumulatorType
 	timeoutMs: number | null
 }
 
-export type CountOptions = CommonOptions & {
-	count: number;
+export type SizeOptions = BaseOptions & {
+	size: number;
 }
 
-export type ShiftOptions = CommonOptions & {
-	shiftMs: number;
+export type DebounceOptions = BaseOptions & {
+	debounceMs: number;
 }
 
-export function isCountOptions(options: unknown): options is CountOptions {
+export function isSizeOptions(options: unknown): options is SizeOptions {
 	return options !== null &&
 		typeof options === 'object' &&
 		'count' in options &&
@@ -22,33 +22,33 @@ export function isCountOptions(options: unknown): options is CountOptions {
 		typeof options.count === 'number';
 }
 
-export function isShiftOptions(options: unknown): options is ShiftOptions {
+export function isDebounceOptions(options: unknown): options is DebounceOptions {
 	return options !== null &&
 		typeof options === 'object' &&
-		'shiftMs' in options &&
-		options.shiftMs !== null &&
-		typeof options.shiftMs === 'number';
+		'debounceMs' in options &&
+		options.debounceMs !== null &&
+		typeof options.debounceMs === 'number';
 }
 
-export function validateOptions(options: CountOptions | ShiftOptions): Error | null {
-	const err = validateCommonOptions(options);
+export function validateOptions(options: SizeOptions | DebounceOptions): Error | null {
+	const err = validateBaseOptions(options);
 
 	if (err !== null) {
 		return err;
 	}
 
-	if (isCountOptions(options)) {
-		return validateCountOptions(options);
+	if (isSizeOptions(options)) {
+		return validateSizeOptions(options);
 	}
 
-	if (isShiftOptions(options)) {
-		return validateShiftOptions(options);
+	if (isDebounceOptions(options)) {
+		return validateDebounceOptions(options);
 	}
 
 	throw Errors.unknownOptionsType();
 }
 
-export function validateCommonOptions(options: CommonOptions): Error | null {
+export function validateBaseOptions(options: BaseOptions): Error | null {
 	if (options.accumulatorType !== 'array' && options.accumulatorType !== 'set') {
 		return Errors.unsupportedAccumulatorType(options.accumulatorType);
 	}
@@ -60,28 +60,28 @@ export function validateCommonOptions(options: CommonOptions): Error | null {
 	return null;
 }
 
-function validateCountOptions(options: CountOptions): Error | null {
-	if (options.count <= 0) {
-		return Errors.nonPositiveCount(options.count);
+function validateSizeOptions(options: SizeOptions): Error | null {
+	if (options.size <= 0) {
+		return Errors.nonPositiveSize(options.size);
 	}
 
 	return null;
 }
 
-function validateShiftOptions(options: ShiftOptions): Error | null {
-	if (options.shiftMs <= 0) {
-		return Errors.nonPositiveShift(options.shiftMs);
+function validateDebounceOptions(options: DebounceOptions): Error | null {
+	if (options.debounceMs <= 0) {
+		return Errors.nonPositiveDebounce(options.debounceMs);
 	}
 
-	if (options.timeoutMs !== null && options.shiftMs >= options.timeoutMs) {
-		return Errors.shiftGreaterThanTimeout(options.shiftMs, options.timeoutMs);
+	if (options.timeoutMs !== null && options.debounceMs >= options.timeoutMs) {
+		return Errors.debounceGreaterThanTimeout(options.debounceMs, options.timeoutMs);
 	}
 
 	return null;
 }
 
-export const defaultOptions: ShiftOptions = {
+export const defaultOptions: DebounceOptions = {
 	accumulatorType: 'array',
 	timeoutMs: 2000,
-	shiftMs: 50,
+	debounceMs: 50,
 };

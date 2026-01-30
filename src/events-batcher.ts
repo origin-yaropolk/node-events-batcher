@@ -1,8 +1,8 @@
 import { Accumulator } from './accumulator';
-import { CountOptions, defaultOptions, ShiftOptions, validateOptions } from './options';
+import { SizeOptions, defaultOptions, DebounceOptions, validateOptions } from './options';
 import { NewStrategy, Strategy } from './strategy';
 
-export type CallbackType<T> = (accummulator: ReadonlyArray<T>) => void | PromiseLike<void>;
+export type CallbackType<T> = (accumulator: ReadonlyArray<T>) => void | PromiseLike<void>;
 export type ErrorHandler = (error: unknown) => void;
 
 export class EventsBatcher<EventType> {
@@ -12,7 +12,7 @@ export class EventsBatcher<EventType> {
 	constructor(
 		private readonly cb: CallbackType<EventType>,
 		private readonly errorHandler: ErrorHandler | null = null,
-		private readonly options: CountOptions | ShiftOptions = defaultOptions) {
+		private readonly options: SizeOptions | DebounceOptions = defaultOptions) {
 		const err = validateOptions(options);
 
 		if (err !== null) {
