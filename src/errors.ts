@@ -22,10 +22,6 @@ export function debounceGreaterThanTimeout(debounce: number, timeout: number): E
 	return Error(`EventsBatcher: 'debounce' must be less than 'timeout'. Got debounceMs=${ debounce }, timeoutMs=${ timeout }`);
 }
 
-export function addInCallback(): Error {
-	return Error('EventsBatcher: impossible to add event in callback');
-}
-
 export function shouldNotBeExecuted(): Error {
 	return Error('EventsBatcher: this should not be executed. Check your configuration');
 }

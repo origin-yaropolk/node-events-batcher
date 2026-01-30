@@ -84,6 +84,8 @@ Two strategy types:
 |--------|------|-------------|
 | `debounceMs` | `number` | Flush after this many ms without a new event. Must be &lt; `timeoutMs` when `timeoutMs` is set. |
 
+**Size strategy** is preferred if both `size` and `debounceMs` is set.
+
 ### Examples
 
 **Size-based batching (e.g. send when 10 items):**

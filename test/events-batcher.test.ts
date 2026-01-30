@@ -61,6 +61,41 @@ describe("EventsBatcher tests", () => {
 		expect(isDurationAcceptable).toBeTruthy();
 	});
 
+	test("Batch size based strategy adding in callback test", async() => {
+		const [batchSizeResultResolver, batchSizeResultAwaiter] = makeAwaiter<ReadonlyArray<number>>();
+		const [timeoutResultResolver, timeoutResultAwaiter] = makeAwaiter<ReadonlyArray<number>>();
+
+		const cb = (acc: ReadonlyArray<number>): void => {
+			if (acc.length < 2) {
+				return timeoutResultResolver(acc);
+			}
+
+			batcher.add(3)
+			return batchSizeResultResolver(acc);
+		};
+
+		const batcher = new EventsBatcher(cb, null, {
+			accumulatorType: 'array',
+			timeoutMs: 2000,
+			size: 2,
+		});
+
+		const _ = new Promise(() => {
+			batcher.add(1);
+			batcher.add(2);
+		});
+
+		const got = await batchSizeResultAwaiter;
+
+		expect(got.length).toEqual(2);
+		expect(got).toEqual([1, 2]);
+
+		const gotTimedOut = await timeoutResultAwaiter;
+
+		expect(gotTimedOut.length).toEqual(1);
+		expect(gotTimedOut).toEqual([3]);
+	});
+
 	test("Batch size based strategy with set test", async() => {
 		const [batchSizeResultResolver, batchSizeResultAwaiter] = makeAwaiter<ReadonlyArray<number>>();
 

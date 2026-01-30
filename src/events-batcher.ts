@@ -1,7 +1,6 @@
 import { Accumulator } from './accumulator';
 import { DebounceOptions, defaultOptions, SizeOptions, validateOptions } from './options';
 import { createStrategy, Strategy } from './strategy';
-import * as Errors from './errors';
 
 export type CallbackType<T> = (accumulator: ReadonlyArray<T>) => void | PromiseLike<void>;
 export type ErrorHandler = (error: unknown) => void;
@@ -9,7 +8,6 @@ export type ErrorHandler = (error: unknown) => void;
 export class EventsBatcher<EventType> {
 	private accumulator: Accumulator<EventType>;
 	private strategy: Strategy<EventType>;
-	private flushing: boolean = false;
 
 	constructor(
 		private readonly cb: CallbackType<EventType>,
@@ -26,10 +24,6 @@ export class EventsBatcher<EventType> {
 	}
 
 	public add(object: EventType): void {
-		if (this.flushing) {
-			throw Errors.addInCallback()
-		}
-
 		this.strategy.add(object);
 	}
 
@@ -38,11 +32,10 @@ export class EventsBatcher<EventType> {
 	}
 
 	private fire(): void {
-		this.flushing = true;
 		const events = this.accumulator.get();
 
+		this.strategy.reset();
 		if (events.length === 0) {
-			this.strategy.reset();
 			return;
 		}
 
@@ -51,16 +44,20 @@ export class EventsBatcher<EventType> {
 
 			if (mayBePromise instanceof Promise) {
 				mayBePromise.catch(error => {
-					this.handleError(error);
+					try {
+						this.handleError(error);
+					} catch (e) {
+						// Rethrow in next tick so it surfaces; throwing here would only
+						// reject the .catch() promise and become an unhandled rejection.
+						queueMicrotask(() => {
+							throw e;
+						});
+					}
 				});
 			}
 		}
 		catch (error) {
 			this.handleError(error);
-		}
-		finally {
-			this.strategy.reset();
-			this.flushing = false;
 		}
 	}
 
