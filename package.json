@@ -1,6 +1,6 @@
 {
 	"name": "node-events-batcher",
-	"version": "0.0.0",
+	"version": "1.0.1",
 	"description": "Universal events batcher for NodeJS",
 	"scripts": {
 		"lint": "pnpm lint:ec && pnpm lint:eslint",
