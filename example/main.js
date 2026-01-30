@@ -65,10 +65,10 @@ function cb(acc) {
 	if (acc.length === windows.length) {
 		console.log('All windows closed')
 
+		// save before closing
 		storeState()
 
 		windows.forEach(w => {
-			// save before closing
 			forceClose(w)
 		})
 
@@ -90,6 +90,7 @@ function cb(acc) {
 		}
 
 		// save after closing
+		storeState()
 	}
 }
 
@@ -126,7 +127,10 @@ function createWindow(state = defaultState) {
 }
 
 app.whenReady().then(() => {
-	ipcMain.addListener('create-window', _ => createWindow())
+	ipcMain.addListener('create-window', _ => {
+		createWindow()
+		storeState()
+	})
 	ipcMain.addListener('close-all-windows', _ => closeAllWindows())
 
 	if (!restoreState()) {

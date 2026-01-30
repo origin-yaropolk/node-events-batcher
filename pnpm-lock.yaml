@@ -66,8 +66,8 @@ importers:
   example:
     dependencies:
       node-events-batcher:
-        specifier: file:D:/dev/node-events-batcher/node-events-batcher-0.0.0.tgz
-        version: file:node-events-batcher-0.0.0.tgz
+        specifier: ^1.0.0
+        version: 1.0.0
     devDependencies:
       electron:
         specifier: ^40.0.0
@@ -1865,9 +1865,8 @@ packages:
   neo-async@2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
 
-  node-events-batcher@file:node-events-batcher-0.0.0.tgz:
-    resolution: {integrity: sha512-Bm7Z9SbmXRa1gecrUeAZ9tzb9zv9Xka4Wkj+IS++dV3dinOl/BWFyyAyMqHJNkY9CjkYdBkOXVwwGXjctNpSDQ==, tarball: file:node-events-batcher-0.0.0.tgz}
-    version: 0.0.0
+  node-events-batcher@1.0.0:
+    resolution: {integrity: sha512-WmNnnMduuRpfKP3BRABP39XILDTmcLXGcl0FMwWxeJOa4lUFu+1E5U++Dqx1XHyWRr5KuTuoyRQRDZa15/vP3w==}
 
   node-int64@0.4.0:
     resolution: {integrity: sha512-O5lz91xSOeoXP6DulyHfllpq+Eg00MWitZIbtPfoSEvqIHdl5gfcY6hYzDWnj0qD5tz52PI08u9qUvSVeUBeHw==}
@@ -4719,7 +4718,7 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  node-events-batcher@file:node-events-batcher-0.0.0.tgz: {}
+  node-events-batcher@1.0.0: {}
 
   node-int64@0.4.0: {}
 

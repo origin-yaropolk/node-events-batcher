@@ -16,6 +16,6 @@
 		"electron": "^40.0.0"
 	},
 	"dependencies": {
-		"node-events-batcher": "file:D:/dev/node-events-batcher/node-events-batcher-0.0.0.tgz"
+		"node-events-batcher": "^1.0.0"
 	}
 }
